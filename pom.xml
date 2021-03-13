@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.orsoft</groupId>
-	<artifactId>testing-api</artifactId>
+	<artifactId>quizzer-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>testing-api</name>
-	<description>API of testing project</description>
+	<name>quizzer-api</name>
+	<description>API of the Quizzer project</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

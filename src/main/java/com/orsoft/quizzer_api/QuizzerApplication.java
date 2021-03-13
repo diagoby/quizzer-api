@@ -1,12 +1,12 @@
-package com.orsoft.testing_api;
+package com.orsoft.quizzer_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TestingApplication {
+public class QuizzerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TestingApplication.class, args);
+		SpringApplication.run(QuizzerApplication.class, args);
 	}
 }
