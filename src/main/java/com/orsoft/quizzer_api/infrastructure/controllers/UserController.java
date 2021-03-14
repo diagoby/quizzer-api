@@ -1,8 +1,10 @@
 package com.orsoft.quizzer_api.infrastructure.controllers;
 
+
 import com.orsoft.quizzer_api.domain.contracts.dto.CreateUserDTO;
 import com.orsoft.quizzer_api.domain.services.IUserService;
 
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +21,7 @@ public class UserController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void register(@RequestBody CreateUserDTO userDto) {
+  public void register(@Valid @RequestBody CreateUserDTO userDto) {
     userService.register(userDto);
   }
 }
