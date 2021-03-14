@@ -17,8 +17,14 @@ public class UserService implements IUserService {
   @Autowired
   private UserMapper userMapper;
 
+  @Autowired
+  private SecurityService securityService;
+
   @Override
   public User register(CreateUserDTO userDto) {
-    return userRepository.save(this.userMapper.toEntity(userDto));
+    User user = this.userMapper.toEntity(userDto);
+    user.setPassword(securityService.encodePassword(user.getPassword()));
+
+    return userRepository.save(user);
   }
 }
