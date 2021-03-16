@@ -1,0 +1,4 @@
+# Preserve deployment configuration files during merges
+Dockerfile merge=ours
+docker-compose.yml merge=ours
+default.conf.conf merge=ours
