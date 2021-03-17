@@ -1,11 +1,2 @@
-spring:
-  datasource:
-    url: "jdbc:postgresql://localhost:5432/testing"
-    username: "postgres"
-    password: "qwe123"
-  jpa:
-    generate-ddl: true
-    hibernate:
-      ddl-auto: "update"
 hash:
   workfactor: 10
