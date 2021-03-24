@@ -1,0 +1,24 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13.2
+    container_name: quizzer-api_db
+    volumes:
+      - 'pg_data:/var/lib/postgresql/data'
+    env_file:
+      - '.env'
+    ports:
+      - ${DB_PORT}:5432
+    restart: always
+  app:
+    image: diagoby/quizzer-api
+    container_name: quizzer-api_app
+    env_file:
+      - '.env'
+    ports:
+      - ${APP_PORT}:3333
+    restart: always
+    depends_on:
+      - db
+volumes:
+  pg_data: { }
