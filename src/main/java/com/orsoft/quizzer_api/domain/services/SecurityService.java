@@ -17,4 +17,9 @@ public class SecurityService implements ISecurityService {
   public String encodePassword(String rawPassword) {
     return passwordEncoder.encode(rawPassword);
   }
+
+  @Override
+  public boolean matchPasswordHash(String password, String hash) {
+    return passwordEncoder.matches(password, hash);
+  }
 }
