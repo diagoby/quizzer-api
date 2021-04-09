@@ -9,4 +9,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface IUserRepository extends CrudRepository<User, UUID> {
   Optional<User> findByEmail(String email);
+  Boolean existsByEmail(String email);
 }

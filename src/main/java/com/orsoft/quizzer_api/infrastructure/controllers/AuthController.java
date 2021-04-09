@@ -7,11 +7,13 @@ import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
 import com.orsoft.quizzer_api.domain.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 public class AuthController {
@@ -21,12 +23,15 @@ public class AuthController {
   @PostMapping(path = "register")
   @ResponseStatus(HttpStatus.CREATED)
   public void register(@Valid @RequestBody RegisterUserDTO userDto) {
-    userService.register(userDto);
+    userService.register(userDto)
+      .ifPresent((error) -> {
+        throw new ResponseStatusException(HttpStatus.CONFLICT);
+      });
   }
 
   @PostMapping(path = "login")
   public ReadUserDTO login(@Valid @RequestBody LoginUserDTO loginDto) {
-    Optional<ReadUserDTO> userDto = userService.login(loginDto);
-    return userDto.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+    return userService.login(loginDto)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
   }
 }

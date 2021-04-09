@@ -4,6 +4,7 @@ import com.orsoft.quizzer_api.domain.contracts.dto.LoginUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.ReadUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.mappers.UserMapper;
+import com.orsoft.quizzer_api.domain.errors.UserAlreadyRegisteredError;
 import com.orsoft.quizzer_api.domain.models.User;
 import com.orsoft.quizzer_api.infrastructure.repositories.IUserRepository;
 
@@ -25,11 +26,17 @@ public class UserService implements IUserService {
   private SecurityService securityService;
 
   @Override
-  public void register(RegisterUserDTO userDto) {
+  public Optional<UserAlreadyRegisteredError> register(RegisterUserDTO userDto) {
+    if(userRepository.existsByEmail(userDto.email)) {
+      return Optional.of(new UserAlreadyRegisteredError());
+    }
+
     User user = this.userMapper.toEntity(userDto);
     user.setPassword(securityService.encodePassword(user.getPassword()));
 
     userRepository.save(user);
+
+    return Optional.empty();
   }
 
   @Override
