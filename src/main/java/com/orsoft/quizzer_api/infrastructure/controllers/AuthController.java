@@ -7,10 +7,7 @@ import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
 import com.orsoft.quizzer_api.domain.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
@@ -25,7 +22,9 @@ public class AuthController {
   public void register(@Valid @RequestBody RegisterUserDTO userDto) {
     userService.register(userDto)
       .ifPresent((error) -> {
-        throw new ResponseStatusException(HttpStatus.CONFLICT);
+        throw new ResponseStatusException(
+          HttpStatus.CONFLICT, error.getMessage()
+        );
       });
   }
 
