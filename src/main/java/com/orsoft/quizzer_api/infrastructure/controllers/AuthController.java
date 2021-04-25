@@ -20,17 +20,15 @@ public class AuthController {
   @PostMapping(path = "register")
   @ResponseStatus(HttpStatus.CREATED)
   public void register(@Valid @RequestBody RegisterUserDTO userDto) {
-    userService.register(userDto)
-      .ifPresent((error) -> {
-        throw new ResponseStatusException(
-          HttpStatus.CONFLICT, error.getMessage()
-        );
-      });
+    userService.register(userDto).ifError((error) -> {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, error);
+    });
   }
 
   @PostMapping(path = "login")
   public ReadUserDTO login(@Valid @RequestBody LoginUserDTO loginDto) {
-    return userService.login(loginDto)
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+    return userService.login(loginDto).getOrThrow((error) ->
+      new ResponseStatusException(HttpStatus.UNAUTHORIZED, error)
+    );
   }
 }

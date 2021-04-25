@@ -49,7 +49,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
       .setPath(((ServletWebRequest)request).getRequest().getServletPath())
       .setError(ex.getStatus().getReasonPhrase())
       .setStatus(ex.getRawStatusCode())
-      .setMessage(ex.getMessage());
+      .setMessage(ex.getReason());
 
     return ResponseEntity.status(ex.getStatus()).body(payload);
   }

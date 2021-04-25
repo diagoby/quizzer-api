@@ -4,8 +4,8 @@ import com.orsoft.quizzer_api.domain.contracts.dto.LoginUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.ReadUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.mappers.UserMapper;
-import com.orsoft.quizzer_api.domain.errors.UserAlreadyRegisteredError;
 import com.orsoft.quizzer_api.domain.models.User;
+import com.orsoft.quizzer_api.domain.utils.Result;
 import com.orsoft.quizzer_api.infrastructure.repositories.IUserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,9 @@ public class UserService implements IUserService {
   private SecurityService securityService;
 
   @Override
-  public Optional<UserAlreadyRegisteredError> register(RegisterUserDTO userDto) {
+  public Result<Object, String> register(RegisterUserDTO userDto) {
     if(userRepository.existsByEmail(userDto.email)) {
-      return Optional.of(new UserAlreadyRegisteredError());
+      return Result.error("User already registered");
     }
 
     User user = this.userMapper.toEntity(userDto);
@@ -36,13 +36,15 @@ public class UserService implements IUserService {
 
     userRepository.save(user);
 
-    return Optional.empty();
+    return Result.empty();
   }
 
   @Override
-  public Optional<ReadUserDTO> login(LoginUserDTO userDto) {
-    return userRepository.findByEmail(userDto.email)
+  public Result<ReadUserDTO, String> login(LoginUserDTO userDto) {
+    Optional<ReadUserDTO> readUserDto = userRepository.findByEmail(userDto.email)
       .filter(u -> securityService.matchPasswordHash(userDto.password, u.getPassword()))
       .map(this.userMapper::toDTO);
+
+    return Result.ofOptional(readUserDto, "Wrong email or password");
   }
 }
