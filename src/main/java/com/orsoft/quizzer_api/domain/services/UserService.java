@@ -4,7 +4,6 @@ import com.orsoft.quizzer_api.domain.contracts.dto.LoginUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.ReadUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.mappers.UserMapper;
-import com.orsoft.quizzer_api.domain.errors.UserAlreadyRegisteredError;
 import com.orsoft.quizzer_api.domain.models.User;
 import com.orsoft.quizzer_api.domain.utils.Result;
 import com.orsoft.quizzer_api.infrastructure.repositories.IUserRepository;
@@ -29,7 +28,7 @@ public class UserService implements IUserService {
   @Override
   public Result<Object, String> register(RegisterUserDTO userDto) {
     if(userRepository.existsByEmail(userDto.email)) {
-      return Result.error(new UserAlreadyRegisteredError().getMessage());
+      return Result.error("User already registered");
     }
 
     User user = this.userMapper.toEntity(userDto);
