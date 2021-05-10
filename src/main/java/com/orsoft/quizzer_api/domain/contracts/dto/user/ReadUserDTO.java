@@ -1,4 +1,4 @@
-package com.orsoft.quizzer_api.domain.contracts.dto;
+package com.orsoft.quizzer_api.domain.contracts.dto.user;
 
 public class ReadUserDTO {
   public String id;
