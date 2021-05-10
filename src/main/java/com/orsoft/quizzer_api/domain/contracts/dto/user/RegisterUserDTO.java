@@ -1,4 +1,4 @@
-package com.orsoft.quizzer_api.domain.contracts.dto;
+package com.orsoft.quizzer_api.domain.contracts.dto.user;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

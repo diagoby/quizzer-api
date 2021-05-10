@@ -3,7 +3,7 @@ package com.orsoft.quizzer_api.infrastructure.repositories;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.orsoft.quizzer_api.domain.models.User;
+import com.orsoft.quizzer_api.domain.models.user.User;
 
 import org.springframework.data.repository.CrudRepository;
 

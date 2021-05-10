@@ -1,10 +1,11 @@
-package com.orsoft.quizzer_api.domain.services;
+package com.orsoft.quizzer_api.domain.services.user;
 
-import com.orsoft.quizzer_api.domain.contracts.dto.LoginUserDTO;
-import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
-import com.orsoft.quizzer_api.domain.contracts.dto.ReadUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.LoginUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.RegisterUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.ReadUserDTO;
 import com.orsoft.quizzer_api.domain.contracts.mappers.UserMapper;
-import com.orsoft.quizzer_api.domain.models.User;
+import com.orsoft.quizzer_api.domain.models.user.User;
+import com.orsoft.quizzer_api.domain.services.security.SecurityService;
 import com.orsoft.quizzer_api.domain.utils.Result;
 import com.orsoft.quizzer_api.infrastructure.repositories.IUserRepository;
 

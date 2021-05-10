@@ -1,11 +1,11 @@
 package com.orsoft.quizzer_api.domain.contracts.mappers;
 
-import com.orsoft.quizzer_api.domain.models.User;
+import com.orsoft.quizzer_api.domain.models.user.User;
 
 import org.springframework.stereotype.Component;
 
-import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
-import com.orsoft.quizzer_api.domain.contracts.dto.ReadUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.RegisterUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.ReadUserDTO;
 
 @Component
 public class UserMapper implements IEntityMapper<User, RegisterUserDTO, ReadUserDTO> {
