@@ -1,29 +1,24 @@
-package com.orsoft.quizzer_api.domain.models;
+package com.orsoft.quizzer_api.domain.models.user;
 
+import com.orsoft.quizzer_api.domain.models.quiz.Quiz;
+
+import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity()
 @Table(name = "users")
 public class User {
-  @Id
-  @GeneratedValue
   private UUID id = UUID.randomUUID();
-
-  @Column()
   private String email;
-
-  @Column(name="full_name")
   private String fullName;
-
-  @Column
   private String password;
 
+  private Set<Quiz> quizzes;
+
+  @Id
+  @GeneratedValue
   public UUID getId() {
     return id;
   }
@@ -32,6 +27,7 @@ public class User {
     this.id = id;
   }
 
+  @Column()
   public String getEmail() {
     return email;
   }
@@ -40,6 +36,7 @@ public class User {
     this.email = email;
   }
 
+  @Column(name="full_name")
   public String getFullName() {
     return fullName;
   }
@@ -48,11 +45,21 @@ public class User {
     this.fullName = fullName;
   }
 
+  @Column
   public String getPassword() {
     return password;
   }
 
   public void setPassword(String password) {
     this.password = password;
-  }  
+  }
+
+  @OneToMany(mappedBy = "user")
+  public Set<Quiz> getQuizzes() {
+    return quizzes;
+  }
+
+  public void setQuizzes(Set<Quiz> quizzes) {
+    this.quizzes = quizzes;
+  }
 }

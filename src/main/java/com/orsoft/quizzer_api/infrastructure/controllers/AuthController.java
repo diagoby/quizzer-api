@@ -1,10 +1,10 @@
 package com.orsoft.quizzer_api.infrastructure.controllers;
 
 
-import com.orsoft.quizzer_api.domain.contracts.dto.LoginUserDTO;
-import com.orsoft.quizzer_api.domain.contracts.dto.ReadUserDTO;
-import com.orsoft.quizzer_api.domain.contracts.dto.RegisterUserDTO;
-import com.orsoft.quizzer_api.domain.services.IUserService;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.LoginUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.ReadUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.RegisterUserDTO;
+import com.orsoft.quizzer_api.domain.services.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

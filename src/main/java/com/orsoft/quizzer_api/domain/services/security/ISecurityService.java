@@ -1,4 +1,4 @@
-package com.orsoft.quizzer_api.domain.services;
+package com.orsoft.quizzer_api.domain.services.security;
 
 public interface ISecurityService {
   String encodePassword(String password);
