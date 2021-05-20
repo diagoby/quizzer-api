@@ -1,5 +1,6 @@
 package com.orsoft.quizzer_api.domain.contracts.mappers;
 
+import com.orsoft.quizzer_api.domain.contracts.dto.quiz.CreateQuizDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.quiz.ReadQuizDTO;
 import com.orsoft.quizzer_api.domain.models.quiz.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
-public class QuizMapper implements IEntityMapper<Quiz, Object, ReadQuizDTO>{
+public class QuizMapper implements IEntityMapper<Quiz, CreateQuizDTO, ReadQuizDTO>{
   @Autowired
   private UserMapper userMapper;
 
@@ -16,8 +17,18 @@ public class QuizMapper implements IEntityMapper<Quiz, Object, ReadQuizDTO>{
   private QuestionMapper questionMapper;
 
   @Override
-  public Quiz toEntity(Object dto) {
-    return null;
+  public Quiz toEntity(CreateQuizDTO dto) {
+    Quiz quizEntity = new Quiz();
+
+    quizEntity.setTitle(dto.title);
+    quizEntity.setDescription(dto.description);
+    quizEntity.setQuestions(
+      dto.questions.stream()
+        .map(questionMapper::toEntity)
+        .collect(Collectors.toSet())
+    );
+
+    return quizEntity;
   }
 
   @Override
@@ -27,10 +38,10 @@ public class QuizMapper implements IEntityMapper<Quiz, Object, ReadQuizDTO>{
       .withTitle(entity.getTitle())
       .withDescription(entity.getDescription())
       .withCreatedAt(entity.getCreatedAt())
-      .withCreatedBy(this.userMapper.toDTO(entity.getUser()))
+      .withCreatedBy(userMapper.toDTO(entity.getUser()))
       .withQuestions(
         entity.getQuestions().stream()
-          .map(this.questionMapper::toDTO)
+          .map(questionMapper::toDTO)
           .collect(Collectors.toSet())
       )
       .build();
