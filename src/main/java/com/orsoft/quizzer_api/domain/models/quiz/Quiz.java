@@ -2,16 +2,23 @@ package com.orsoft.quizzer_api.domain.models.quiz;
 
 import com.orsoft.quizzer_api.domain.models.question.Question;
 import com.orsoft.quizzer_api.domain.models.user.User;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+
 @Entity
 @Table(name = "quizzes")
+@EntityListeners(AuditingEntityListener.class)
 public class Quiz {
   private UUID id = UUID.randomUUID();
   private String title;
@@ -20,7 +27,7 @@ public class Quiz {
   private Date updatedAt;
 
   private User user;
-  private Set<Question> questions;
+  private Set<Question> questions = new HashSet<>();
 
   @Id
   @GeneratedValue
@@ -92,11 +99,14 @@ public class Quiz {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
+  @OnDelete(action = OnDeleteAction.CASCADE)
   public Set<Question> getQuestions() {
     return questions;
   }
 
   public void setQuestions(Set<Question> questions) {
+    questions.forEach(question -> question.setQuiz(this));
+
     this.questions = questions;
   }
 }

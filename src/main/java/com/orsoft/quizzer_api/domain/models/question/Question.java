@@ -2,8 +2,11 @@ package com.orsoft.quizzer_api.domain.models.question;
 
 import com.orsoft.quizzer_api.domain.models.answer.Answer;
 import com.orsoft.quizzer_api.domain.models.quiz.Quiz;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,7 +18,7 @@ public class Question {
   private QuestionType type;
 
   private Quiz quiz;
-  private Set<Answer> answers;
+  private Set<Answer> answers = new HashSet<>();
 
   @Id
   @GeneratedValue
@@ -61,11 +64,14 @@ public class Question {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
+  @OnDelete(action = OnDeleteAction.CASCADE)
   public Set<Answer> getAnswers() {
     return answers;
   }
 
   public void setAnswers(Set<Answer> answers) {
+    answers.forEach(answer -> answer.setQuestion(this));
+
     this.answers = answers;
   }
 }
