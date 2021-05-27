@@ -1,5 +1,6 @@
 package com.orsoft.quizzer_api.domain.contracts.dto.quiz;
 
+import com.orsoft.quizzer_api.domain.contracts.constraints.UUIDString;
 import com.orsoft.quizzer_api.domain.contracts.dto.question.CreateQuestionDTO;
 
 import javax.validation.Valid;
@@ -14,6 +15,7 @@ public class CreateQuizDTO {
   public String description;
 
   @NotBlank
+  @UUIDString
   public String creatorId;
 
   @Valid
