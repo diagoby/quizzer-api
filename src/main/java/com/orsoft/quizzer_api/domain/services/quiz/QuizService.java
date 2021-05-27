@@ -6,6 +6,7 @@ import com.orsoft.quizzer_api.domain.contracts.mappers.QuizMapper;
 import com.orsoft.quizzer_api.domain.models.quiz.Quiz;
 import com.orsoft.quizzer_api.domain.models.user.User;
 import com.orsoft.quizzer_api.domain.utils.Result;
+import com.orsoft.quizzer_api.domain.utils.Convert;
 import com.orsoft.quizzer_api.infrastructure.repositories.IQuizRepository;
 import com.orsoft.quizzer_api.infrastructure.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,11 @@ public class QuizService implements IQuizService {
 
   @Override
   public Result<Object, String> createQuiz(CreateQuizDTO quizDto) {
-    Optional<User> userEntity = userRepository.findById(UUID.fromString(quizDto.creatorId));
+    Optional<User> userEntity = Convert.stringToUUID(quizDto.creatorId)
+      .flatMap(userRepository::findById);
 
     if(userEntity.isEmpty()) {
-      return Result.error(String.format("No user found with id \"%s\"", quizDto.creatorId));
+      return Result.error("Could not find user with the given id. \nPlease, make sure the creatorId is correct.");
     }
 
     Quiz quizEntity = quizMapper.toEntity(quizDto);
@@ -45,18 +47,21 @@ public class QuizService implements IQuizService {
 
   @Override
   public Result<ReadQuizDTO, String> getQuizById(String id) {
-    Optional<ReadQuizDTO> readQuizDto = quizRepository.findById(UUID.fromString(id))
-      .map(quizMapper::toDTO);
-
-    return Result.ofOptional(readQuizDto, String.format("No quiz found by id \"%s\"", id));
+    return Result.ofOptional(
+      Convert.stringToUUID(id)
+        .flatMap(quizRepository::findById)
+        .map(quizMapper::toDTO),
+      "Could not find the quiz with the given id. \nPlease, make sure the id is correct."
+    );
   }
 
   @Override
   public Result<Set<ReadQuizDTO>, String> getUserQuizzes(String userId) {
-    Optional<User> userEntity = userRepository.findById(UUID.fromString(userId));
+    Optional<User> userEntity = Convert.stringToUUID(userId)
+      .flatMap(userRepository::findById);
 
     if(userEntity.isEmpty()) {
-      return Result.error(String.format("No user found with id \"%s\"", userId));
+      return Result.error("Could not find user with the given id. \nPlease, make sure the id is correct.");
     }
 
     return Result.ok(
