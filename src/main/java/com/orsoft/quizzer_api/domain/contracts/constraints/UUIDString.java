@@ -10,6 +10,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = UUIDValidator.class)
 public @interface UUIDString {
   Class<? extends Payload>[] payload() default {};
+  boolean allowNull() default false;
   Class<?>[] groups() default {};
   String message() default "must be a valid UUID string";
 }
