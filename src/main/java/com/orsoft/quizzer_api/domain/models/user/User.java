@@ -1,7 +1,11 @@
 package com.orsoft.quizzer_api.domain.models.user;
 
+import com.orsoft.quizzer_api.domain.models.attempt.Attempt;
 import com.orsoft.quizzer_api.domain.models.quiz.Quiz;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,7 +19,8 @@ public class User {
   private String fullName;
   private String password;
 
-  private Set<Quiz> quizzes;
+  private Set<Quiz> quizzes = new HashSet<>();
+  private Set<Attempt> attempts = new HashSet<>();
 
   @Id
   @GeneratedValue
@@ -61,5 +66,19 @@ public class User {
 
   public void setQuizzes(Set<Quiz> quizzes) {
     this.quizzes = quizzes;
+  }
+
+  @OneToMany(
+    mappedBy = "user",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  public Set<Attempt> getAttempts() {
+    return attempts;
+  }
+
+  public void setAttempts(Set<Attempt> attempts) {
+    this.attempts = attempts;
   }
 }

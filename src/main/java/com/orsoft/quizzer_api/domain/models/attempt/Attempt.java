@@ -1,7 +1,6 @@
-package com.orsoft.quizzer_api.domain.models.quiz;
+package com.orsoft.quizzer_api.domain.models.attempt;
 
-import com.orsoft.quizzer_api.domain.models.attempt.Attempt;
-import com.orsoft.quizzer_api.domain.models.question.Question;
+import com.orsoft.quizzer_api.domain.models.quiz.Quiz;
 import com.orsoft.quizzer_api.domain.models.user.User;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -15,20 +14,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-
 @Entity
-@Table(name = "quizzes")
+@Table(name = "attempts")
 @EntityListeners(AuditingEntityListener.class)
-public class Quiz {
+public class Attempt {
   private UUID id = UUID.randomUUID();
-  private String title;
-  private String description;
   private Date createdAt;
   private Date updatedAt;
 
+  private Quiz quiz;
   private User user;
-  private Set<Question> questions = new HashSet<>();
-  private Set<Attempt> attempts = new HashSet<>();
+  private Set<AttemptAnswer> answers = new HashSet<>();
 
   @Id
   @GeneratedValue
@@ -38,24 +34,6 @@ public class Quiz {
 
   public void setId(UUID id) {
     this.id = id;
-  }
-
-  @Column(nullable = false)
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  @Column
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   @Column(
@@ -87,6 +65,16 @@ public class Quiz {
 
   @ManyToOne
   @JoinColumn(nullable = false)
+  public Quiz getQuiz() {
+    return quiz;
+  }
+
+  public void setQuiz(Quiz quiz) {
+    this.quiz = quiz;
+  }
+
+  @ManyToOne
+  @JoinColumn(nullable = false)
   public User getUser() {
     return user;
   }
@@ -96,32 +84,18 @@ public class Quiz {
   }
 
   @OneToMany(
-    mappedBy = "quiz",
+    mappedBy = "attempt",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
   @OnDelete(action = OnDeleteAction.CASCADE)
-  public Set<Question> getQuestions() {
-    return questions;
+  public Set<AttemptAnswer> getAnswers() {
+    return answers;
   }
 
-  public void setQuestions(Set<Question> questions) {
-    questions.forEach(question -> question.setQuiz(this));
+  public void setAnswers(Set<AttemptAnswer> answers) {
+    answers.forEach(answer -> answer.setAttempt(this));
 
-    this.questions = questions;
-  }
-
-  @OneToMany(
-    mappedBy = "quiz",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true
-  )
-  @OnDelete(action = OnDeleteAction.CASCADE)
-  public Set<Attempt> getAttempts() {
-    return attempts;
-  }
-
-  public void setAttempts(Set<Attempt> attempts) {
-    this.attempts = attempts;
+    this.answers = answers;
   }
 }
