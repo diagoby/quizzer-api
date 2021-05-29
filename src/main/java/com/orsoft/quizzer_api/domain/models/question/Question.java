@@ -74,4 +74,13 @@ public class Question {
 
     this.answers = answers;
   }
+
+  @Transient
+  public long getPossibleAnswersAmount() {
+    Set<Answer> answers = this.getAnswers();
+
+    return this.getType() != QuestionType.MULTIPLE
+      ? answers.stream().filter(Answer::getRight).count()
+      : answers.size();
+  }
 }
