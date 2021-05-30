@@ -33,6 +33,14 @@ public class QuizController {
     });
   }
 
+  @DeleteMapping("{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public void removeQuiz(@PathVariable("id") String quizId) {
+    quizService.removeQuiz(quizId).ifError((error) -> {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, error);
+    });
+  }
+
   @PostMapping("{id}/attempts")
   @ResponseStatus(HttpStatus.CREATED)
   public AttemptResultDTO makeQuizAttempt(
