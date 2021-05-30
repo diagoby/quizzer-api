@@ -1,6 +1,8 @@
 package com.orsoft.quizzer_api.domain.services.quiz;
 
 import com.orsoft.quizzer_api.domain.contracts.dto.attempt.CreateAttemptDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.attempt.result.AttemptResultDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.attempt.result.AttemptResultQuestionDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.quiz.CreateQuizDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.quiz.ReadQuizDTO;
 import com.orsoft.quizzer_api.domain.contracts.mappers.QuizMapper;
@@ -80,7 +82,7 @@ public class QuizService implements IQuizService {
   }
 
   @Override
-  public Result<Object, String> makeQuizAttempt(String quizId, CreateAttemptDTO attemptDto) {
+  public Result<AttemptResultDTO, String> makeQuizAttempt(String quizId, CreateAttemptDTO attemptDto) {
     Optional<Quiz> maybeQuizEntity = Convert.stringToUUID(quizId)
       .flatMap(quizRepository::findById);
 
@@ -98,9 +100,9 @@ public class QuizService implements IQuizService {
     Quiz quizEntity = maybeQuizEntity.get();
     User userEntity = maybeUserEntity.get();
 
-    Attempt attemptEntity = new Attempt();
-    attemptEntity.setQuiz(quizEntity);
-    attemptEntity.setUser(userEntity);
+    Attempt attemptEntityCandidate = new Attempt();
+    attemptEntityCandidate.setQuiz(quizEntity);
+    attemptEntityCandidate.setUser(userEntity);
 
     Map<UUID, Set<AttemptAnswer>> questionsAttemptsAnswersMap = new HashMap<>();
 
@@ -151,10 +153,65 @@ public class QuizService implements IQuizService {
       .flatMap(Set::stream)
       .collect(Collectors.toSet());
 
-    attemptEntity.setAnswers(flattenAttemptAnswers);
+    attemptEntityCandidate.setAnswers(flattenAttemptAnswers);
 
-    attemptRepository.save(attemptEntity);
+    Attempt attemptEntity = attemptRepository.save(attemptEntityCandidate);
 
-    return Result.empty();
+    return getQuizAttemptResult(attemptEntity.getId().toString());
+  }
+
+  @Override
+  public Result<AttemptResultDTO, String> getQuizAttemptResult(String attemptId) {
+    Optional<Attempt> maybeAttemptEntity = Convert.stringToUUID(attemptId)
+      .flatMap(attemptRepository::findById);
+
+    if(maybeAttemptEntity.isEmpty()) {
+      return Result.error(String.format("Could not find quiz attempt with id: %s", attemptId));
+    }
+
+    Attempt attemptEntity = maybeAttemptEntity.get();
+    Quiz quizEntity = attemptEntity.getQuiz();
+
+    Map<Question, Set<AttemptAnswer>> attemptAnswersByQuestion = attemptEntity.getAnswers().stream().collect(
+      Collectors.groupingBy(AttemptAnswer::getQuestion, Collectors.toSet())
+    );
+
+    Set<AttemptResultQuestionDTO> questionResults = new HashSet<>();
+
+    for (var entry : attemptAnswersByQuestion.entrySet()) {
+      Question questionEntity = entry.getKey();
+      Set<AttemptAnswer> attemptAnswers = entry.getValue();
+
+      AttemptResultQuestionDTO resultQuestionDto = AttemptResultQuestionDTO.builder()
+        .withQuestionType(questionEntity.getType().toString())
+        .withQuestionTitle(questionEntity.getTitle())
+        .build();
+
+      if(questionEntity.getType() == QuestionType.TEXT) {
+        String answerValue = attemptAnswers.stream().map(AttemptAnswer::getValue).findFirst().orElse("");
+
+        resultQuestionDto.isCorrectQuestion = questionEntity.getCorrectAnswers().stream()
+          .map(answer -> answer.getTitle().toLowerCase())
+          .findFirst()
+          .map(answerValue.toLowerCase()::equals)
+          .orElse(false);
+
+        resultQuestionDto.attemptAnswers = Set.of(answerValue);
+      } else {
+        Set<Answer> answers = attemptAnswers.stream().map(AttemptAnswer::getAnswer).collect(Collectors.toSet());
+
+        resultQuestionDto.isCorrectQuestion = questionEntity.getCorrectAnswers().equals(answers);
+        resultQuestionDto.attemptAnswers = answers.stream().map(Answer::getTitle).collect(Collectors.toSet());
+      }
+
+      questionResults.add(resultQuestionDto);
+    }
+
+    AttemptResultDTO attemptResultDto = AttemptResultDTO.builder()
+      .withQuizTitle(quizEntity.getTitle())
+      .withQuestionResults(questionResults)
+      .build();
+
+    return Result.ok(attemptResultDto);
   }
 }
