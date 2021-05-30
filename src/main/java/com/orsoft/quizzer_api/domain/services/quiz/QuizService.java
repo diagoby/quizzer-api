@@ -66,6 +66,20 @@ public class QuizService implements IQuizService {
   }
 
   @Override
+  public Result<Object, String> removeQuiz(String id) {
+    Optional<UUID> existingQuizId = Convert.stringToUUID(id)
+      .filter(quizRepository::existsById);
+
+    if(existingQuizId.isEmpty()) {
+      return Result.error("Could not find quiz with the given id. \nPlease, make sure the id is correct.");
+    }
+
+    quizRepository.deleteById(existingQuizId.get());
+
+    return Result.empty();
+  }
+
+  @Override
   public Result<Set<ReadQuizDTO>, String> getUserQuizzes(String userId) {
     Optional<User> userEntity = Convert.stringToUUID(userId)
       .flatMap(userRepository::findById);
