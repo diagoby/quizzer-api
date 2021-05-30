@@ -1,6 +1,7 @@
 package com.orsoft.quizzer_api.infrastructure.controllers;
 
 import com.orsoft.quizzer_api.domain.contracts.dto.attempt.CreateAttemptDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.attempt.result.AttemptResultDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.quiz.CreateQuizDTO;
 import com.orsoft.quizzer_api.domain.contracts.dto.quiz.ReadQuizDTO;
 import com.orsoft.quizzer_api.domain.services.quiz.IQuizService;
@@ -34,12 +35,12 @@ public class QuizController {
 
   @PostMapping("{id}/attempts")
   @ResponseStatus(HttpStatus.CREATED)
-  public void makeQuizAttempt(
+  public AttemptResultDTO makeQuizAttempt(
     @PathVariable("id") String quizId,
     @Valid @RequestBody CreateAttemptDTO attemptDto
   ) {
-    quizService.makeQuizAttempt(quizId, attemptDto).ifError((error) -> {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error);
-    });
+    return quizService.makeQuizAttempt(quizId, attemptDto).getOrThrow((error) ->
+      new ResponseStatusException(HttpStatus.BAD_REQUEST, error)
+    );
   }
 }

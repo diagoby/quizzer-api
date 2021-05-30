@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "questions")
@@ -82,5 +83,17 @@ public class Question {
     return this.getType() != QuestionType.MULTIPLE
       ? answers.stream().filter(Answer::getRight).count()
       : answers.size();
+  }
+
+  @Transient
+  public Set<Answer> getCorrectAnswers() {
+    return this.getAnswers().stream().filter(Answer::getRight).collect(Collectors.toSet());
+  }
+
+  @Transient
+  public Set<Answer> getWrongAnswers() {
+    Set<Answer> wrongAnswers = new HashSet<>(this.getAnswers());
+    wrongAnswers.removeAll(getCorrectAnswers());
+    return wrongAnswers;
   }
 }
