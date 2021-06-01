@@ -1,17 +1,17 @@
 package com.orsoft.quizzer_api.domain.contracts.mappers;
 
-import com.orsoft.quizzer_api.domain.models.User;
+import com.orsoft.quizzer_api.domain.models.user.User;
 
 import org.springframework.stereotype.Component;
 
-import com.orsoft.quizzer_api.domain.contracts.dto.CreateUserDTO;
-import com.orsoft.quizzer_api.domain.contracts.dto.ReadUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.RegisterUserDTO;
+import com.orsoft.quizzer_api.domain.contracts.dto.user.ReadUserDTO;
 
 @Component
-public class UserMapper implements IEntityMapper<User, CreateUserDTO, ReadUserDTO> {
+public class UserMapper implements IEntityMapper<User, RegisterUserDTO, ReadUserDTO> {
 
   @Override
-  public User toEntity(CreateUserDTO dto) {
+  public User toEntity(RegisterUserDTO dto) {
     User user = new User();
 
     user.setFullName(dto.fullName);
@@ -23,8 +23,11 @@ public class UserMapper implements IEntityMapper<User, CreateUserDTO, ReadUserDT
 
   @Override
   public ReadUserDTO toDTO(User entity) {
-    // TODO Auto-generated method stub
-    return null;
+    return new ReadUserDTO(
+      entity.getId().toString(),
+      entity.getEmail(),
+      entity.getFullName()
+    );
   }
 
 }

@@ -1,10 +1,10 @@
-package com.orsoft.quizzer_api.domain.contracts.dto;
+package com.orsoft.quizzer_api.domain.contracts.dto.user;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class CreateUserDTO {
+public class RegisterUserDTO {
   @NotBlank
   public String fullName;
 
@@ -15,7 +15,7 @@ public class CreateUserDTO {
   @NotBlank
   public String password;
 
-  public CreateUserDTO(String fullName, String email, String password) {
+  public RegisterUserDTO(String fullName, String email, String password) {
     this.fullName = fullName;
     this.email = email;
     this.password = password;

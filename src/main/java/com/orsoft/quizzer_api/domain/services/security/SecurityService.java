@@ -1,4 +1,4 @@
-package com.orsoft.quizzer_api.domain.services;
+package com.orsoft.quizzer_api.domain.services.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,5 +16,10 @@ public class SecurityService implements ISecurityService {
   @Override
   public String encodePassword(String rawPassword) {
     return passwordEncoder.encode(rawPassword);
+  }
+
+  @Override
+  public boolean matchPasswordHash(String password, String hash) {
+    return passwordEncoder.matches(password, hash);
   }
 }

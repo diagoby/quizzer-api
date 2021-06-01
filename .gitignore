@@ -5,7 +5,9 @@ target/
 !**/src/test/**/target/
 
 ### Configuration ###
-*.properties
+application-*.properties
+application-*.yml
+*.env
 
 ### STS ###
 .apt_generated
